@@ -27,11 +27,13 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
     private fun openGalleryForImage() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/"
+        intent.type = INTENT_TYPE
         activity?.startActivityFromFragment(this, intent, STORAGE_REQUEST_CODE)
     }
 
     companion object {
+
+        private const val INTENT_TYPE = "image/"
 
         private const val STORAGE_REQUEST_CODE = 69
 

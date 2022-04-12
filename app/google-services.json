@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "396210697575",
+    "project_id": "biorec-7cd08",
+    "storage_bucket": "biorec-7cd08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396210697575:android:874493414f620b8baeebc2",
+        "android_client_info": {
+          "package_name": "com.yeletskyiv.biorec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396210697575-c0o19oujqv92qd1ri3ch3a2kvab4o6db.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9g3430HUaOMQ4g4xVs9quQHY6kmvQn0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396210697575-c0o19oujqv92qd1ri3ch3a2kvab4o6db.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
