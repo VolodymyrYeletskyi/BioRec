@@ -5,11 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.ScaleGestureDetector
 import android.view.View
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,6 +29,22 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         take_image_button.setOnClickListener { takePhoto() }
     }
 
+    private fun createZoomListener(cameraInfo: CameraInfo, cameraControl: CameraControl): ScaleGestureDetector {
+        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                val currentZoomRatio = cameraInfo.zoomState.value?.zoomRatio ?: 0f
+
+                val delta = detector.scaleFactor
+
+                cameraControl.setZoomRatio(currentZoomRatio * delta)
+
+                return true
+            }
+        }
+        return ScaleGestureDetector(requireContext(), listener)
+    }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -45,13 +59,33 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
 
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-            } catch (exception: Exception) {
-                Log.e("TAG", "Binding failed", exception)
-            }
+            bindCamera(cameraProvider, cameraSelector, preview)
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun bindCamera(
+        cameraProvider: ProcessCameraProvider,
+        cameraSelector: CameraSelector,
+        preview: Preview
+    ) {
+        try {
+            cameraProvider.unbindAll()
+            val camera = cameraProvider.bindToLifecycle(
+                this,
+                cameraSelector,
+                preview,
+                imageCapture
+            )
+
+            val scaleGestureDetector = createZoomListener(camera.cameraInfo, camera.cameraControl)
+            camera_preview.setOnTouchListener { _, motionEvent ->
+                scaleGestureDetector.onTouchEvent(motionEvent)
+                true
+            }
+
+        } catch (exception: Exception) {
+            Log.e("TAG", "Binding failed", exception)
+        }
     }
 
     private fun takePhoto() {
