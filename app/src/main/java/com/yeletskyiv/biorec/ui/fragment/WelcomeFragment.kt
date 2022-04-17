@@ -3,6 +3,7 @@ package com.yeletskyiv.biorec.ui.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.yeletskyiv.biorec.R
@@ -26,7 +27,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
     }
 
     private fun openGalleryForImage() {
-        val intent = Intent(Intent.ACTION_PICK)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = INTENT_TYPE
         activity?.startActivityFromFragment(this, intent, STORAGE_REQUEST_CODE)
     }

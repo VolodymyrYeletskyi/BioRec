@@ -42,13 +42,15 @@ class ImageFragment(private val imageUri: Uri?) : Fragment(R.layout.fragment_ima
             options
         )
 
+        loader.show()
         imageViewModel.detectImage(bitmap, detector)
-
-        text_layout.visibility = View.VISIBLE
     }
 
-    private fun updateResults(resultToDisplay: List<Pair<RectF, String>>) {
+    private fun updateResults(resultToDisplay: List<List<Any>>) {
         if (resultToDisplay.isNotEmpty()) {
+            name_layout.visibility = View.VISIBLE
+            score_layout.visibility = View.VISIBLE
+
             val pen = Paint()
             pen.color = ContextCompat.getColor(requireContext(), R.color.light_green)
             pen.style = Paint.Style.STROKE
@@ -56,13 +58,13 @@ class ImageFragment(private val imageUri: Uri?) : Fragment(R.layout.fragment_ima
             val bitmap = working_image.drawable.toBitmap()
             val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
             val canvas = Canvas(copyBitmap)
-            canvas.drawRect(resultToDisplay.first().first, pen)
+            canvas.drawRect(resultToDisplay[0][0] as RectF, pen)
             working_image.setImageBitmap(copyBitmap)
 
-            result_text.text = resultToDisplay.first().second
-        } else {
-            result_text.text = "Object not found"
+            name_text.text = resultToDisplay[0][1] as String
+            score_text.text = resultToDisplay[0][2] as String
         }
+        loader.hide()
     }
 
     companion object {

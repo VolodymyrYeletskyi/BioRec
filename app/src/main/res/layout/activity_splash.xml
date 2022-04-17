@@ -4,15 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/light_green">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textStyle="bold|italic"
-        android:textColor="@color/light_green"
+        android:textColor="@color/white"
         android:textSize="64sp"
         android:text="@string/app_name" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_biorec"
+        app:tint="@color/white"
+        android:layout_gravity="center"
+        android:layout_marginTop="160dp" />
 
 </FrameLayout>
