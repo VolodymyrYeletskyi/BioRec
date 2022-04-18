@@ -1,9 +1,6 @@
 package com.yeletskyiv.biorec.ui.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.yeletskyiv.biorec.R
@@ -17,26 +14,10 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
         camera_button.setOnClickListener { (activity as? MainActivity)?.openCamera() }
 
-        storage_button.setOnClickListener { openGalleryForImage() }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == STORAGE_REQUEST_CODE)
-            (activity as? MainActivity)?.replaceFragment(ImageFragment.create(data?.data))
-    }
-
-    private fun openGalleryForImage() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = INTENT_TYPE
-        activity?.startActivityFromFragment(this, intent, STORAGE_REQUEST_CODE)
+        storage_button.setOnClickListener { (activity as? MainActivity)?.openGalleryForImage() }
     }
 
     companion object {
-
-        private const val INTENT_TYPE = "image/"
-
-        private const val STORAGE_REQUEST_CODE = 69
 
         fun create() = WelcomeFragment()
     }

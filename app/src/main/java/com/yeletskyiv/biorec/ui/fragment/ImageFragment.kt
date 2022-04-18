@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.yeletskyiv.biorec.R
+import com.yeletskyiv.biorec.ui.activity.MainActivity
 import com.yeletskyiv.biorec.viewmodel.ImageViewModel
 import kotlinx.android.synthetic.main.fragment_image.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,6 +28,8 @@ class ImageFragment(private val imageUri: Uri?) : Fragment(R.layout.fragment_ima
 
         working_image.setImageURI(imageUri)
         detect_button.setOnClickListener { recognizeObject() }
+        photo_button.setOnClickListener { (activity as MainActivity).replaceFragment(CameraFragment.create()) }
+        storage_button.setOnClickListener { (activity as? MainActivity)?.openGalleryForImage() }
     }
 
     private fun recognizeObject() {
@@ -50,11 +53,12 @@ class ImageFragment(private val imageUri: Uri?) : Fragment(R.layout.fragment_ima
         if (resultToDisplay.isNotEmpty()) {
             name_layout.visibility = View.VISIBLE
             score_layout.visibility = View.VISIBLE
+            bottom_buttons_layout.visibility = View.VISIBLE
 
             val pen = Paint()
             pen.color = ContextCompat.getColor(requireContext(), R.color.light_green)
             pen.style = Paint.Style.STROKE
-            pen.strokeWidth = 18.0f
+            pen.strokeWidth = 9.0f
             val bitmap = working_image.drawable.toBitmap()
             val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
             val canvas = Canvas(copyBitmap)

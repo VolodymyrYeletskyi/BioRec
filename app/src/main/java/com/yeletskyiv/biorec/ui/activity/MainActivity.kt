@@ -1,6 +1,8 @@
 package com.yeletskyiv.biorec.ui.activity
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.yeletskyiv.biorec.R
 import com.yeletskyiv.biorec.ui.base.BaseActivity
 import com.yeletskyiv.biorec.ui.fragment.CameraFragment
+import com.yeletskyiv.biorec.ui.fragment.ImageFragment
 import com.yeletskyiv.biorec.ui.fragment.WelcomeFragment
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
@@ -35,6 +38,18 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == STORAGE_REQUEST_CODE)
+            replaceFragment(ImageFragment.create(data?.data))
+    }
+
+    fun openGalleryForImage() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = INTENT_TYPE
+        startActivityForResult(intent, STORAGE_REQUEST_CODE)
     }
 
     fun openCamera() {
@@ -64,6 +79,10 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     companion object {
+
+        private const val INTENT_TYPE = "image/"
+
+        private const val STORAGE_REQUEST_CODE = 18
 
         private const val CAMERA_REQUEST_CODE = 69
 
