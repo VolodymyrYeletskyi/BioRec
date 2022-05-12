@@ -16,7 +16,7 @@
         android:textAlignment="center"
         android:textSize="32sp"
         android:textColor="@color/green"
-        android:text="Take a new photo or choose existing one" />
+        android:text="@string/welcome_title" />
 
     <LinearLayout
         android:id="@+id/camera_button"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/green"
             android:textSize="18sp"
-            android:text="Take a photo" />
+            android:text="@string/camera_button" />
 
     </LinearLayout>
 
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/green"
             android:textSize="18sp"
-            android:text="Take from storage" />
+            android:text="@string/storage_button" />
 
     </LinearLayout>
 

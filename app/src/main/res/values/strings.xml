@@ -1,3 +1,13 @@
 <resources>
+
     <string name="app_name">BioRec</string>
+    <string name="neural_network">Neural Network</string>
+    <string name="template_matching">Template Matching</string>
+    <string name="recognition_results">Recognition results: </string>
+    <string name="take_new_photo">Take new photo</string>
+    <string name="show_gallery">Show Gallery</string>
+    <string name="welcome_title">Take a new photo or choose existing one</string>
+    <string name="camera_button">Take a photo</string>
+    <string name="storage_button">Take from storage</string>
+
 </resources>

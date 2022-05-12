@@ -1,79 +1,106 @@
 package com.yeletskyiv.biorec.ui.fragment
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.yeletskyiv.biorec.R
+import com.yeletskyiv.biorec.ml.AnimalModel
 import com.yeletskyiv.biorec.ui.activity.MainActivity
 import com.yeletskyiv.biorec.viewmodel.ImageViewModel
 import kotlinx.android.synthetic.main.fragment_image.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.tensorflow.lite.task.vision.detector.ObjectDetector
 
 class ImageFragment(private val imageUri: Uri?) : Fragment(R.layout.fragment_image) {
 
     private val imageViewModel: ImageViewModel by viewModel()
 
+    private val labels = listOf(
+        "Butterfly",
+        "Cat",
+        "Chicken",
+        "Cow",
+        "Dog",
+        "Elephant",
+        "Horse",
+        "Sheep",
+        "Spider",
+        "Squirrel"
+    )
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        imageViewModel.resultsLiveData.observe(viewLifecycleOwner) { updateResults(it) }
+        imageViewModel.neuralLiveData.observe(viewLifecycleOwner) { showNeuralResults(it) }
+        imageViewModel.patternLiveData.observe(viewLifecycleOwner) { showPatternResults((it)) }
 
         working_image.setImageURI(imageUri)
-        detect_button.setOnClickListener { recognizeObject() }
+
+        detect_button.setOnClickListener { getNeuralRecognition() }
+        pattern_button.setOnClickListener { getPatternRecognition() }
+
         photo_button.setOnClickListener { (activity as MainActivity).replaceFragment(CameraFragment.create()) }
         storage_button.setOnClickListener { (activity as? MainActivity)?.openGalleryForImage() }
     }
 
-    private fun recognizeObject() {
+    private fun getNeuralRecognition() {
+        loader.show()
+
+        val model = AnimalModel.newInstance(requireContext())
         val bitmap = working_image.drawable.toBitmap()
 
-        val options = ObjectDetector.ObjectDetectorOptions.builder()
-            .setMaxResults(5)
-            .setScoreThreshold(0.5f)
-            .build()
-        val detector = ObjectDetector.createFromFileAndOptions(
-            requireContext(),
-            MODEL_NAME,
-            options
-        )
-
-        loader.show()
-        imageViewModel.detectImage(bitmap, detector)
+        recognition_layout.visibility = View.INVISIBLE
+        imageViewModel.detectImage(bitmap, model)
     }
 
-    private fun updateResults(resultToDisplay: List<List<Any>>) {
-        if (resultToDisplay.isNotEmpty()) {
-            name_layout.visibility = View.VISIBLE
-            score_layout.visibility = View.VISIBLE
-            bottom_buttons_layout.visibility = View.VISIBLE
+    private fun getPatternRecognition() {
+        loader.show()
 
-            val pen = Paint()
-            pen.color = ContextCompat.getColor(requireContext(), R.color.light_green)
-            pen.style = Paint.Style.STROKE
-            pen.strokeWidth = 9.0f
-            val bitmap = working_image.drawable.toBitmap()
-            val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-            val canvas = Canvas(copyBitmap)
-            canvas.drawRect(resultToDisplay[0][0] as RectF, pen)
-            working_image.setImageBitmap(copyBitmap)
+        val bitmap = working_image.drawable.toBitmap()
 
-            name_text.text = resultToDisplay[0][1] as String
-            score_text.text = resultToDisplay[0][2] as String
-        }
+        recognition_layout.visibility = View.INVISIBLE
+        imageViewModel.recognizeImageByPattern(
+            bitmap,
+            initPatterns(),
+            labels
+        )
+    }
+
+    private fun showNeuralResults(resultToDisplay: Pair<Int, Float>) {
+        name_layout.visibility = View.VISIBLE
+        bottom_buttons_layout.visibility = View.VISIBLE
+
+        name_text.text = labels[resultToDisplay.first]
+
         loader.hide()
     }
 
-    companion object {
+    private fun showPatternResults(result: String) {
+        name_layout.isVisible = true
+        bottom_buttons_layout.visibility = View.VISIBLE
 
-        private const val MODEL_NAME = "model.tflite"
+        name_text.text = result
+
+        loader.hide()
+    }
+
+    private fun initPatterns() = listOf(
+        BitmapFactory.decodeResource(resources, R.drawable.butterfly_template),
+        BitmapFactory.decodeResource(resources, R.drawable.cat_template),
+        BitmapFactory.decodeResource(resources, R.drawable.chicken_template),
+        BitmapFactory.decodeResource(resources, R.drawable.cow_template),
+        BitmapFactory.decodeResource(resources, R.drawable.dog_template),
+        BitmapFactory.decodeResource(resources, R.drawable.elephant_template),
+        BitmapFactory.decodeResource(resources, R.drawable.horse_template),
+        BitmapFactory.decodeResource(resources, R.drawable.sheep_template),
+        BitmapFactory.decodeResource(resources, R.drawable.spider_template),
+        BitmapFactory.decodeResource(resources, R.drawable.squirrel_template)
+    )
+
+    companion object {
 
         fun create(uri: Uri?) = ImageFragment(uri)
     }

@@ -1,7 +1,6 @@
 package com.yeletskyiv.biorec.ui.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.yeletskyiv.biorec.R
 import com.yeletskyiv.biorec.ui.base.BaseActivity
@@ -17,10 +16,12 @@ class SplashActivity : BaseActivity(R.layout.activity_splash) {
 
         splashViewModel.showLogo()
 
-        splashViewModel.splashLiveData.observe(this) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        splashViewModel.splashLiveData.observe(this) { goToMainActivity() }
+    }
+
+    private fun goToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
